@@ -14,6 +14,10 @@ get '/:repo/:commit/*.*' do
   rescue
     content_type 'application/octet-stream'
   end
-  repo = Git.open("#{repos_root}/#{params[:repo]}")
-  repo.show(params[:commit], params[:splat].join("."))
+  if params[:commit] == "direct"
+    File.read("#{repos_root}/#{params[:repo]}/#{params[:splat].join(".")}")
+  else
+    repo = Git.open("#{repos_root}/#{params[:repo]}")
+    repo.show(params[:commit], params[:splat].join("."))
+  end
 end
